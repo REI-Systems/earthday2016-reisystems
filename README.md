@@ -1,2 +1,2 @@
-# earthday2016-reisystems
+# EARTH DAY HACKATHON by Reisystems
 REST Api build on Spring boot.
