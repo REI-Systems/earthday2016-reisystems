@@ -16,7 +16,7 @@ public class GreetingController {
     @RequestMapping("/")
     @ResponseBody
     String home() {
-        return "Hello World from Earthday!";
+        return "Hello World from Earthday! (Viktor)";
     }
 
 
