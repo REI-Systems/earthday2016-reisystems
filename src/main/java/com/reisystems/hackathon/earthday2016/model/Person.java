@@ -1,18 +1,24 @@
 package com.reisystems.hackathon.earthday2016.model;
 
-public class Person {
+import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.core.Relation;
 
-    private long id;
+@Relation(collectionRelation = "people")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Person extends ResourceSupport {
+
+    private long personId;
     private String name;
 
     public Person() {}
 
-    public long getId() {
-        return id;
+    public long getPersonId() {
+        return personId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setPersonId(long personId) {
+        this.personId = personId;
     }
 
     public String getName() {

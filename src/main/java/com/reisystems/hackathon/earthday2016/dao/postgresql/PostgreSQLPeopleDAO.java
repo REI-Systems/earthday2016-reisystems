@@ -16,7 +16,7 @@ public class PostgreSQLPeopleDAO implements PeopleDAO {
     private NamedParameterJdbcTemplate jdbcTemplate;
 
     public List<Person> getPeople() {
-        String sql = "SELECT id, name FROM people";
+        String sql = "SELECT person_id, name FROM people";
 
         SqlParameterSource args = new MapSqlParameterSource();
 
