@@ -1,5 +1,8 @@
 package com.reisystems.hackathon.earthday2016.controller;
 
+import com.reisystems.hackathon.earthday2016.dao.PeopleDAO;
+import com.reisystems.hackathon.earthday2016.model.Person;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resources;
@@ -13,13 +16,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/data")
-public class DataController {
+@RequestMapping("/v1/people")
+public class PeopleController {
+
+    @Autowired
+    private PeopleDAO peopleDAO;
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
-    public HttpEntity home() {
-        List<Object> data = new ArrayList<>();
-        data.add("Hello Team");
+    public HttpEntity getPeople() {
+        List<Person> data = peopleDAO.getPeople();
 
         List<Link> links = new ArrayList<>();
 
