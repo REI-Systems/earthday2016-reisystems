@@ -11,7 +11,7 @@ public class StateSustainability extends ResourceSupport {
     private String acronym;
     private String name;
     private Double amount;
-    private Double amount_sustainable;
+    private Double amountSustainable;
 
     public StateSustainability() {}
 
@@ -39,11 +39,11 @@ public class StateSustainability extends ResourceSupport {
         this.amount = amount;
     }
 
-    public Double getAmount_sustainable() {
-        return amount_sustainable;
+    public Double getAmountSustainable() {
+        return amountSustainable;
     }
 
-    public void setAmount_sustainable(Double amount_sustainable) {
-        this.amount_sustainable = amount_sustainable;
+    public void setAmountSustainable(Double amountSustainable) {
+        this.amountSustainable = amountSustainable;
     }
 }
