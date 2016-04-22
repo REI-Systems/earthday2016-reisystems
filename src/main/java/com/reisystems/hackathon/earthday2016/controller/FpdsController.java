@@ -69,6 +69,8 @@ public class FpdsController {
         Trend spending;
         for (int i = 1; i <= 10; i++) {
             spending = new Trend();
+            spending.setAgencyId("1400" + Integer.toString(i));
+            spending.setAgencyAbbreviation("A" + Integer.toString(i));
             spending.setDate(new Date(2005 + i, 1, 1));
             spending.setAmount(1678.5 * i);
             spending.setAmountSustainable(26.0 * i);
