@@ -8,16 +8,16 @@ import org.springframework.hateoas.core.Relation;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Person extends ResourceSupport {
 
-    private long personId;
+    private Integer personId;
     private String name;
 
     public Person() {}
 
-    public long getPersonId() {
+    public Integer getPersonId() {
         return personId;
     }
 
-    public void setPersonId(long personId) {
+    public void setPersonId(Integer personId) {
         this.personId = personId;
     }
 

@@ -7,7 +7,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpEntity;
@@ -15,8 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -32,6 +30,8 @@ public class PeopleController {
     @RequestMapping(method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
     @ApiOperation(value = "Search")
     public HttpEntity getPeople(
+            @RequestParam(value = "ids", required = false) Set<String> ids,
+            @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "offset", required = false) Integer offset,
             @RequestParam(value = "limit", required = false) Integer limit) {
 
@@ -39,16 +39,19 @@ public class PeopleController {
             limit = 1;
         }
 
-        List<Person> people = peopleDAO.getPeople(offset, limit);
+        Map<String, Object> query = new HashMap<>();
+        if (ids != null) {
+            query.put("person_id", ids);
+        }
+        if (name != null) {
+            query.put("name", name);
+        }
+
+        List<Person> people = peopleDAO.getPeople((query.size() == 0 ? null : query), offset, limit);
 
         if (people != null) {
-            PeopleController templateInstance = methodOn(PeopleController.class);
-
-            String PLACEHOLDER = "__PLACEHOLDER__";
-            String templateElementSelf = linkTo(templateInstance.getPerson(PLACEHOLDER)).toString();
-
             for (Person person: people) {
-                person.add(new Link(templateElementSelf.replace(PLACEHOLDER, Long.toString(person.getPersonId())), Link.REL_SELF));
+                assemblePersonLinks(person);
             }
         }
 
@@ -56,24 +59,24 @@ public class PeopleController {
         PeopleController builder = methodOn(PeopleController.class);
 
         // self
-        links.add(linkTo(builder.getPeople(offset, limit)).withSelfRel());
+        links.add(linkTo(builder.getPeople(ids, name, offset, limit)).withSelfRel());
         // navigation links
         if ((offset != null) && (offset > 0)) {
-            links.add(linkTo(builder.getPeople(null, limit)).withRel(Link.REL_FIRST));
+            links.add(linkTo(builder.getPeople(ids, name, null, limit)).withRel(Link.REL_FIRST));
         }
         if (limit != null) {
             if ((people.size() == limit)) {
                 Integer nextOffset = ((offset == null) ? 0 : offset) + limit;
-                links.add(linkTo(builder.getPeople(nextOffset, limit)).withRel(Link.REL_NEXT));
+                links.add(linkTo(builder.getPeople(ids, name, nextOffset, limit)).withRel(Link.REL_NEXT));
             }
             if ((offset != null) && (offset > 0)) {
                 Integer prevOffset = (offset > limit) ? offset - limit : null;
-                links.add(linkTo(builder.getPeople(prevOffset, limit)).withRel(Link.REL_PREVIOUS));
+                links.add(linkTo(builder.getPeople(ids, name, prevOffset, limit)).withRel(Link.REL_PREVIOUS));
             }
         }
         // search
-        ControllerLinkBuilder searchLinkBuilder = linkTo(builder.getPeople(null, null));
-        Link searchLink = new Link(searchLinkBuilder.toString() + "{offset,limit}", "search");
+        ControllerLinkBuilder searchLinkBuilder = linkTo(builder.getPeople(null, null, null, null));
+        Link searchLink = new Link(searchLinkBuilder.toString() + "{ids,name,offset,limit}", "search");
         links.add(searchLink);
 
         return ResponseEntity.ok().body(new Resources<>(people, links));
@@ -82,14 +85,23 @@ public class PeopleController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
     @ApiOperation(value = "Load Participant Information")
     public HttpEntity getPerson(
-            @PathVariable("id") String personId) {
+            @PathVariable("id") Integer personId) {
 
-        Person person = null;
+        Map<String, Object> query = new HashMap<>();
+        query.put("person_id", Integer.valueOf(personId));
 
-        if (person == null) {
+        List<Person> people = peopleDAO.getPeople(query, null, null);
+
+        if (people == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } else {
+            Person person = people.get(0);
+            assemblePersonLinks(person);
             return ResponseEntity.ok().body(person);
         }
+    }
+
+    protected void assemblePersonLinks(Person person) {
+        person.add(linkTo(methodOn(PeopleController.class).getPerson(person.getPersonId())).withSelfRel());
     }
 }
