@@ -4,16 +4,25 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.core.Relation;
 
-@Relation(collectionRelation = "states")
+@Relation(collectionRelation = "collection")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class StateSustainability extends ResourceSupport {
+public class ContextBasedSpending extends ResourceSupport {
 
+    private String identifier;
     private String acronym;
     private String name;
     private Double amount;
     private Double amountSustainable;
 
-    public StateSustainability() {}
+    public ContextBasedSpending() {}
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
 
     public String getAcronym() {
         return acronym;

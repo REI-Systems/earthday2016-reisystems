@@ -1,7 +1,7 @@
 package com.reisystems.hackathon.earthday2016.controller;
 
-import com.reisystems.hackathon.earthday2016.model.StateSustainability;
-import com.reisystems.hackathon.earthday2016.model.Total;
+import com.reisystems.hackathon.earthday2016.model.ContextBasedSpending;
+import com.reisystems.hackathon.earthday2016.model.TotalSpending;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.hateoas.Link;
@@ -21,28 +21,30 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 public class FpdsController {
 
     @RequestMapping(value = "/spending", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
-    @ApiOperation(value = "Total Federal Procurement")
+    @ApiOperation(value = "TotalSpending Federal Procurement")
     public HttpEntity getTotal() {
-        Total total = new Total();
-        total.setAmount(1000000000.0);
-        total.setAmountSustainable(340000000.0);
+        TotalSpending totalSpending = new TotalSpending();
+        totalSpending.setAmount(1000000000.0);
+        totalSpending.setAmountSustainable(340000000.0);
 
-        return ResponseEntity.ok().body(total);
+        return ResponseEntity.ok().body(totalSpending);
     }
 
     @RequestMapping(value = "/sustainability/state", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
     @ApiOperation(value = "State Sustainability")
     public HttpEntity getStateSustainability() {
-        List<StateSustainability> states = new ArrayList<>();
+        List<ContextBasedSpending> states = new ArrayList<>();
 
-        StateSustainability state = new StateSustainability();
+        ContextBasedSpending state = new ContextBasedSpending();
+        state.setIdentifier("1400");
         state.setAcronym("VA");
         state.setName("Virginia");
         state.setAmount(100000.0);
         state.setAmountSustainable(1000.0);
         states.add(state);
 
-        StateSustainability state2 = new StateSustainability();
+        ContextBasedSpending state2 = new ContextBasedSpending();
+        state2.setIdentifier("1789");
         state2.setAcronym("MD");
         state2.setName("Maryland");
         state2.setAmount(1000000.0);

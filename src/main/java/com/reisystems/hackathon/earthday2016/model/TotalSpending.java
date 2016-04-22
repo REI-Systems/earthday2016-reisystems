@@ -2,12 +2,12 @@ package com.reisystems.hackathon.earthday2016.model;
 
 import org.springframework.hateoas.ResourceSupport;
 
-public class Total extends ResourceSupport {
+public class TotalSpending extends ResourceSupport {
 
     private Double amount;
     private Double amountSustainable;
 
-    public Total() {}
+    public TotalSpending() {}
 
     public Double getAmount() {
         return amount;
