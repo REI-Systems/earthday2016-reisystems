@@ -48,18 +48,6 @@ public class FpdsController {
 
         List<ContextBasedSpending> agencies = fpdsDAO.getSpendingByAgencies(limit);
 
-        /*
-        ContextBasedSpending agency;
-        for (int i = 1; i <= limit; i++) {
-            agency = new ContextBasedSpending();
-            agency.setIdentifier("1400" + Integer.toString(i));
-            agency.setAcronym("A" + Integer.toString(i));
-            agency.setName("Context " + Integer.toString(i));
-            agency.setAmount(12300678.0 / i);
-            agency.setAmountSustainable(50000.0 / i);
-            agencies.add(agency);
-        }
-*/
         List<Link> links = new ArrayList<>();
 
         return ResponseEntity.ok().body(new Resources<>(agencies, links));
@@ -68,18 +56,40 @@ public class FpdsController {
     @RequestMapping(value = "/sustainability/agency/trend", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
     @ApiOperation(value = "Spending by Agencies")
     public HttpEntity getAgencySpendingTrend() {
-        List<TotalSpending> trend = new ArrayList<>();
+        List<AgencyTrend> trend = new ArrayList<>();
 
+        AgencyTrend spending;
+        for (int i = 1; i <= 10; i++) {
+            spending = new AgencyTrend();
+            spending.setAgencyId("1400" + Integer.toString(i));
+            spending.setAgencyAbbreviation("A" + Integer.toString(i));
+//            spending.setYear(new Date(2005 + i, 1, 1));
+            spending.setAmount(1678.5 * i);
+            spending.setAmountSustainable(26.0 * i);
+            trend.add(spending);
+        }
+
+        List<Link> links = new ArrayList<>();
+
+        return ResponseEntity.ok().body(new Resources<>(trend, links));
+    }
+
+    @RequestMapping(value = "/sustainability/trend", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
+    @ApiOperation(value = "Spending by Fereral Government")
+    public HttpEntity getSpendingTrend() {
+        List<Trend> trend = fpdsDAO.getTrend();
+
+        /*
         Trend spending;
         for (int i = 1; i <= 10; i++) {
             spending = new Trend();
             spending.setAgencyId("1400" + Integer.toString(i));
             spending.setAgencyAbbreviation("A" + Integer.toString(i));
-            spending.setDate(new Date(2005 + i, 1, 1));
+            spending.setYear(new Date(2005 + i, 1, 1));
             spending.setAmount(1678.5 * i);
             spending.setAmountSustainable(26.0 * i);
             trend.add(spending);
-        }
+        } */
 
         List<Link> links = new ArrayList<>();
 
