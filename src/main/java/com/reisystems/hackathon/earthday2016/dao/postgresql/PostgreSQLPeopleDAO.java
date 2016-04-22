@@ -15,11 +15,17 @@ public class PostgreSQLPeopleDAO implements PeopleDAO {
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
 
-    public List<Person> getPeople() {
-        String sql = "SELECT person_id, name FROM people";
+    public List<Person> getPeople(Integer offset, Integer limit) {
+        StringBuilder sql = new StringBuilder("SELECT person_id, name FROM people");
+        if (limit != null) {
+            sql.append(" LIMIT ").append(limit);
+        }
+        if (offset != null) {
+            sql.append(" OFFSET ").append(offset);
+        }
 
         SqlParameterSource args = new MapSqlParameterSource();
 
-        return this.jdbcTemplate.query(sql, args, new BeanPropertyRowMapper<Person>(Person.class));
+        return this.jdbcTemplate.query(sql.toString(), args, new BeanPropertyRowMapper<Person>(Person.class));
     }
 }

@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface PeopleDAO {
 
-    List<Person> getPeople();
+    List<Person> getPeople(Integer offset, Integer limit);
 }

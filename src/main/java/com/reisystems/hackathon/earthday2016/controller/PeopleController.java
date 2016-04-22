@@ -10,10 +10,7 @@ import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +26,11 @@ public class PeopleController {
     private PeopleDAO peopleDAO;
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
-    public HttpEntity getPeople() {
-        List<Person> people = peopleDAO.getPeople();
+    public HttpEntity getPeople(
+            @RequestParam(value = "offset", required = false) Integer offset,
+            @RequestParam(value = "limit", required = false) Integer limit) {
+
+        List<Person> people = peopleDAO.getPeople(offset, limit);
 
         if (people != null) {
             PeopleController templateInstance = methodOn(PeopleController.class);
@@ -39,11 +39,29 @@ public class PeopleController {
             String templateElementSelf = linkTo(templateInstance.getPerson(PLACEHOLDER)).toString();
 
             for (Person person: people) {
-
+                person.add(new Link(templateElementSelf.replace(PLACEHOLDER, Long.toString(person.getPersonId())), Link.REL_SELF));
             }
         }
 
         List<Link> links = new ArrayList<>();
+        PeopleController builder = methodOn(PeopleController.class);
+
+        // self
+        links.add(linkTo(builder.getPeople(offset, limit)).withSelfRel());
+        // navigation links
+        if ((offset != null) && (offset > 0)) {
+            links.add(linkTo(builder.getPeople(null, limit)).withRel(Link.REL_FIRST));
+        }
+        if (limit != null) {
+            if ((people.size() == limit)) {
+                Integer nextOffset = ((offset == null) ? 0 : offset) + limit;
+                links.add(linkTo(builder.getPeople(nextOffset, limit)).withRel(Link.REL_NEXT));
+            }
+            if ((offset != null) && (offset > 0)) {
+                Integer prevOffset = (offset > limit) ? offset - limit : null;
+                links.add(linkTo(builder.getPeople(prevOffset, limit)).withRel(Link.REL_PREVIOUS));
+            }
+        }
 
         return ResponseEntity.ok().body(new Resources<>(people, links));
     }
