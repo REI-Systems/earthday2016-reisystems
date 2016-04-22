@@ -1,8 +1,10 @@
 package com.reisystems.hackathon.earthday2016.controller;
 
+import com.reisystems.hackathon.earthday2016.dao.FpdsDAO;
 import com.reisystems.hackathon.earthday2016.model.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resources;
@@ -24,12 +26,13 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 @Api(tags = "FPDS", description = "Federal Procurement Data System")
 public class FpdsController {
 
+    @Autowired
+    private FpdsDAO fpdsDAO;
+
     @RequestMapping(value = "/spending", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
     @ApiOperation(value = "TotalSpending Federal Procurement")
     public HttpEntity getTotal() {
-        TotalSpending totalSpending = new TotalSpending();
-        totalSpending.setAmount(1000000000.0);
-        totalSpending.setAmountSustainable(340000000.0);
+        TotalSpending totalSpending = fpdsDAO.getTotal();
 
         return ResponseEntity.ok().body(totalSpending);
     }

@@ -6,8 +6,8 @@ import org.springframework.hateoas.core.Relation;
 @Relation(collectionRelation = "collection")
 public class TotalSpending extends ResourceSupport {
 
-    private Double amount;
-    private Double amountSustainable;
+    private Double amount = 0.0;
+    private Double amountSustainable = 0.0;
 
     public TotalSpending() {}
 
