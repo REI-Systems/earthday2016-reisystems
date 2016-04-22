@@ -26,6 +26,9 @@ public class DataSourceConfiguration {
         datasource.setUsername(environment.getRequiredProperty("database.username"));
         datasource.setPassword(environment.getRequiredProperty("database.password"));
         datasource.addConnectionProperty("sslmode", "require");
+        datasource.setDriverClassName("org.postgresql.Driver");
+        System.out.println(datasource.getDriverClassName());
+        System.out.println();
         System.out.println("\n\n\n\n\n\n\nCompleted initialization Data Source\n\n\n\n\n");
 
         return datasource;
