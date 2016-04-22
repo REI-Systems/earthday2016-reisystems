@@ -20,12 +20,18 @@ public class DataSourceConfiguration {
 
     @Bean
     public DataSource getDataSource() {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException ex) {
+            System.err.println("Could not load PostgreSQL JDBC Driver");
+            return null;
+        }
+
         BasicDataSource datasource = new BasicDataSource();
         datasource.setUrl(environment.getRequiredProperty("database.url"));
         datasource.setUsername(environment.getRequiredProperty("database.username"));
         datasource.setPassword(environment.getRequiredProperty("database.password"));
         datasource.addConnectionProperty("sslmode", "require");
-        datasource.addConnectionProperty("sslfactory", "org.postgresql.ssl.NonValidatingFactory");
 
         return datasource;
     }
