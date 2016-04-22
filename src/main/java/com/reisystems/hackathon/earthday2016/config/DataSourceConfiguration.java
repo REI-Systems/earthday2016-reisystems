@@ -10,6 +10,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @Configuration
 @EnableTransactionManagement
@@ -20,13 +22,23 @@ public class DataSourceConfiguration {
 
     @Bean
     public DataSource getDataSource() {
-        BasicDataSource datasource = new BasicDataSource();
-        datasource.setUrl(environment.getRequiredProperty("DATABASE_URL"));
-//        datasource.setUsername(environment.getRequiredProperty("database.username"));
-//        datasource.setPassword(environment.getRequiredProperty("database.password"));
-//        datasource.addConnectionProperty("sslmode", "require");
+        try {
+            URI dbUri = new URI(environment.getRequiredProperty("DATABASE_URL"));
 
-        return datasource;
+            String username = dbUri.getUserInfo().split(":")[0];
+            String password = dbUri.getUserInfo().split(":")[1];
+            String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
+
+            BasicDataSource basicDataSource = new BasicDataSource();
+            basicDataSource.setUrl(dbUrl);
+            basicDataSource.setUsername(username);
+            basicDataSource.setPassword(password);
+            basicDataSource.addConnectionProperty("sslmode", "require");
+
+            return basicDataSource;
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     @Bean
