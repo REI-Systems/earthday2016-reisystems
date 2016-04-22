@@ -21,24 +21,10 @@ public class PostgreSQLFpdsDAO implements FpdsDAO {
     public TotalSpending getTotal() {
         MapSqlParameterSource args = new MapSqlParameterSource();
 
-        StringBuilder sql = new StringBuilder("SELECT is_sustainable, SUM(amount) AS total FROM fpds GROUP BY is_sustainable");
+        StringBuilder sql = new StringBuilder("SELECT SUM(amount) amount, SUM(CASE WHEN (is_sustainable = '1') THEN amount ELSE 0 END) AS amount_sustainable FROM fpds");
 
-        List<Map<String, Object>> data = this.jdbcTemplate.query(sql.toString(), args, new ColumnMapRowMapper());
+        List<TotalSpending> list = this.jdbcTemplate.query(sql.toString(), args, new BeanPropertyRowMapper<TotalSpending>(TotalSpending.class));
 
-        TotalSpending spending = new TotalSpending();
-
-        if (data != null) {
-            for (Map r: data) {
-                String flag = r.get("is_sustainable").toString();
-                Double amount = (Double) r.get("total");
-
-                if (flag.equals("1")) {
-                    spending.setAmountSustainable(amount);
-                }
-                spending.setAmount(spending.getAmount() + amount);
-            }
-        }
-
-        return spending;
+        return list.get(0);
     }
 }
