@@ -165,6 +165,9 @@ public class FpdsController {
         Link searchLink = new Link(searchLinkBuilder.toString() + "{agencyId,offset,limit}", "search");
         links.add(searchLink);
 
-        return ResponseEntity.ok().body(new Resources<>(transactions, links));
+        TransactionList resource = new TransactionList<>(transactions, links);
+        resource.setCount(150);
+
+        return ResponseEntity.ok().body(resource);
     }
 }
