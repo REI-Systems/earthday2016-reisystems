@@ -1,3 +1,35 @@
+drop table agencies;
+
+CREATE TABLE agencies(
+  agency_id              VARCHAR(20),
+  abbreviation           VARCHAR(20),
+  name                   VARCHAR(50));
+
+INSERT INTO agencies(agency_id, abbreviation, name) VALUES
+SELECT DISTINCT FUNDING_DEPARTMENT_ID, FUNDING_DEPARTMENT_NAME FROM fpds_small;
+
+
+drop table fpds;
+
+CREATE TABLE fpds(
+  piid                   VARCHAR(100), -- PIID
+  agency_id              VARCHAR(20), -- FUNDING_DEPARTMENT_NAME
+  product                VARCHAR(100), -- PRODUCT_OR_SERVICE_DESCRIPTION
+  location_state_code    CHAR(2), -- LOCATION_STATE_CODE
+  effective_date         DATE, -- EFFECTIVE_DATE
+  is_sustainable         CHAR, -- RECOVERED_MATERIAL_CLS_DESC (Exclude "no clauses included and sustainabi/lity includde")
+  amount                 DOUBLE PRECISION); -- TOTAL_OBLIGATED_AMOUNT
+
+INSERT INTO fpds(piid, agency_id, product, location_state_code, effective_date, is_sustainable, amount)
+SELECT PIID,
+       FUNDING_DEPARTMENT_ID,
+       PRODUCT_OR_SERVICE_DESCRIPTION,
+       LOCATION_STATE_CODE,
+       to_date(EFFECTIVE_DATE, 'DD-Mon-YY'),
+       CASE WHEN (RECOVERED_MATERIAL_CLS_DESC = 'NO CLAUSES INCLUDED AND NO SUSTAINABILITY INCLUDED') THEN 0 ELSE 1 END,
+       CAST(TOTAL_OBLIGATED_AMOUNT AS DOUBLE PRECISION)
+FROM fpds_small;
+
 -- PLACE_OF_PERFORM_COUNTRY_CODE = "USA", COUNTRY_CODE = "USA"
 
 CREATE TABLE fpds(
@@ -13,7 +45,7 @@ CREATE TABLE fpds(
 
 
   is_sustainable         CHAR, -- CLAIMANT_PROGRAM, PLACE_OF_MANUFACTURE_DESC (MFG IN U.S., NOT A MANUFACTURED END PRODUCT), PRODUCT_OR_SERVICE_DESCRIPTION, RECOVERED_MATERIAL_CLS_DESC
-  amount                 DOUBLE, -- TOTAL_OBLIGATED_AMOUNT, OBLIGATED_AMOUNT, CURRENT_CONTRACT_VALUE
+  amount                 DOUBLE, -- TOTAL_OBLIGATED_AMOUNT       (, OBLIGATED_AMOUNT, CURRENT_CONTRACT_VALUE
 
 );
 

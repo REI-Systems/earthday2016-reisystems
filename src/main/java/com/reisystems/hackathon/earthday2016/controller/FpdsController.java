@@ -138,6 +138,8 @@ public class FpdsController {
             transactions.add(transaction);
         }
 
+        int count = 150;
+
         if (transactions != null) {
             for (Transaction t: transactions) {
             }
@@ -168,7 +170,7 @@ public class FpdsController {
         links.add(searchLink);
 
         TransactionList resource = new TransactionList<>(transactions, links);
-        resource.setCount(150);
+        resource.setCount(count);
 
         return ResponseEntity.ok().body(resource);
     }
