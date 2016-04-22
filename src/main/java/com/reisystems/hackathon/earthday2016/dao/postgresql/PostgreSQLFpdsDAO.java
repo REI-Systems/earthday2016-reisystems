@@ -40,4 +40,18 @@ public class PostgreSQLFpdsDAO implements FpdsDAO {
 
         return this.jdbcTemplate.query(sql.toString(), args, new BeanPropertyRowMapper<ContextBasedSpending>(ContextBasedSpending.class));
     }
+
+    public List<ContextBasedSpending> getSpendingByAgencies(int limit) {
+        MapSqlParameterSource args = new MapSqlParameterSource();
+
+        StringBuilder sql = new StringBuilder("SELECT d.agency_id, d.amount, d.amount_sustainable, a.name, a.abbreviation AS acronym");
+        sql.append(" FROM (");
+        sql.append(" SELECT agency_id, SUM(amount) amount, SUM(CASE WHEN (is_sustainable = '1') THEN amount ELSE 0 END) AS amount_sustainable FROM fpds GROUP BY agency_id");
+        sql.append(") d, agencies a");
+        sql.append(" WHERE a.agency_id = d.agency_id");
+        sql.append(" ORDER BY d.amount_sustainable DESC");
+        sql.append(" LIMIT ").append(limit);
+
+        return this.jdbcTemplate.query(sql.toString(), args, new BeanPropertyRowMapper<ContextBasedSpending>(ContextBasedSpending.class));
+    }
 }

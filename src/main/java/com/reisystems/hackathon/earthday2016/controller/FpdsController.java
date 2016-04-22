@@ -46,8 +46,9 @@ public class FpdsController {
             limit = 10;
         }
 
-        List<ContextBasedSpending> agencies = new ArrayList<>();
+        List<ContextBasedSpending> agencies = fpdsDAO.getSpendingByAgencies(limit);
 
+        /*
         ContextBasedSpending agency;
         for (int i = 1; i <= limit; i++) {
             agency = new ContextBasedSpending();
@@ -58,7 +59,7 @@ public class FpdsController {
             agency.setAmountSustainable(50000.0 / i);
             agencies.add(agency);
         }
-
+*/
         List<Link> links = new ArrayList<>();
 
         return ResponseEntity.ok().body(new Resources<>(agencies, links));
@@ -89,23 +90,7 @@ public class FpdsController {
     @ApiOperation(value = "Spending by States")
     public HttpEntity getSpendingByStates() {
         List<ContextBasedSpending> states = fpdsDAO.getSpendingByStates();
-/*
-        ContextBasedSpending state = new ContextBasedSpending();
-        state.setIdentifier("1400");
-        state.setAcronym("VA");
-        state.setName("Virginia");
-        state.setAmount(100000.0);
-        state.setAmountSustainable(1000.0);
-        states.add(state);
 
-        ContextBasedSpending state2 = new ContextBasedSpending();
-        state2.setIdentifier("1789");
-        state2.setAcronym("MD");
-        state2.setName("Maryland");
-        state2.setAmount(1000000.0);
-        state2.setAmountSustainable(1000.0);
-        states.add(state2);
-*/
         List<Link> links = new ArrayList<>();
 
         return ResponseEntity.ok().body(new Resources<>(states, links));

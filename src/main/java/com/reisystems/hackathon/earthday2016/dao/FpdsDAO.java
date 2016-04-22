@@ -12,4 +12,6 @@ public interface FpdsDAO {
     TotalSpending getTotal();
 
     List<ContextBasedSpending> getSpendingByStates();
+
+    List<ContextBasedSpending> getSpendingByAgencies(int limit);
 }
