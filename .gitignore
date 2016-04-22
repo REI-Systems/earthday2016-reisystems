@@ -3,3 +3,6 @@
 
 # Maven
 target
+
+# environment specific configurations
+src/main/resources/application-*.properties

@@ -21,10 +21,10 @@ public class DataSourceConfiguration {
     @Bean
     public DataSource getDataSource() {
         BasicDataSource datasource = new BasicDataSource();
-        datasource.setUrl(environment.getRequiredProperty("database.url"));
-        datasource.setUsername(environment.getRequiredProperty("database.username"));
-        datasource.setPassword(environment.getRequiredProperty("database.password"));
-        datasource.addConnectionProperty("sslmode", "require");
+        datasource.setUrl(environment.getRequiredProperty("DATABASE_URL"));
+//        datasource.setUsername(environment.getRequiredProperty("database.username"));
+//        datasource.setPassword(environment.getRequiredProperty("database.password"));
+//        datasource.addConnectionProperty("sslmode", "require");
 
         return datasource;
     }
