@@ -21,28 +21,24 @@ public class DataSourceConfiguration {
     private Environment environment;
 
     @Bean
-    public DataSource getDataSource() {
-        try {
-            URI dbUri = new URI(environment.getRequiredProperty("DATABASE_URL"));
+    public DataSource getDataSource() throws URISyntaxException {
+        URI uri = new URI(environment.getRequiredProperty("DATABASE_URL"));
 
-            String username = dbUri.getUserInfo().split(":")[0];
-            String password = dbUri.getUserInfo().split(":")[1];
-            String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
+        String username = uri.getUserInfo().split(":")[0];
+        String password = uri.getUserInfo().split(":")[1];
+        String databaseUrl = "jdbc:postgresql://" + uri.getHost() + ':' + uri.getPort() + uri.getPath();
 
-            BasicDataSource basicDataSource = new BasicDataSource();
-            basicDataSource.setUrl(dbUrl);
-            basicDataSource.setUsername(username);
-            basicDataSource.setPassword(password);
-            basicDataSource.addConnectionProperty("sslmode", "require");
+        BasicDataSource datasource = new BasicDataSource();
+        datasource.setUrl(databaseUrl);
+        datasource.setUsername(username);
+        datasource.setPassword(password);
+        datasource.addConnectionProperty("sslmode", "require");
 
-            return basicDataSource;
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
+        return datasource;
     }
 
     @Bean
-    public PlatformTransactionManager getTransactionManager() {
+    public PlatformTransactionManager getTransactionManager() throws URISyntaxException {
         return new DataSourceTransactionManager(getDataSource());
     }
 }
