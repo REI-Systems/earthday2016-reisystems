@@ -25,6 +25,7 @@ public class DataSourceConfiguration {
         datasource.setUsername(environment.getRequiredProperty("database.username"));
         datasource.setPassword(environment.getRequiredProperty("database.password"));
         datasource.addConnectionProperty("sslmode", "require");
+        datasource.addConnectionProperty("sslfactory", "org.postgresql.ssl.NonValidatingFactory");
 
         return datasource;
     }
