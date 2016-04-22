@@ -2,6 +2,7 @@ package com.reisystems.hackathon.earthday2016.controller;
 
 import com.reisystems.hackathon.earthday2016.model.ContextBasedSpending;
 import com.reisystems.hackathon.earthday2016.model.TotalSpending;
+import com.reisystems.hackathon.earthday2016.model.Trend;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.hateoas.Link;
@@ -55,6 +56,25 @@ public class FpdsController {
         List<Link> links = new ArrayList<>();
 
         return ResponseEntity.ok().body(new Resources<>(agencies, links));
+    }
+
+    @RequestMapping(value = "/sustainability/agency/trend", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
+    @ApiOperation(value = "Spending by Agencies")
+    public HttpEntity getAgencySpendingTrend() {
+        List<TotalSpending> trend = new ArrayList<>();
+
+        Trend spending;
+        for (int i = 1; i <= 10; i++) {
+            spending = new Trend();
+            spending.setDate(new Date(2005 + i, 1, 1));
+            spending.setAmount(1678.5 * i);
+            spending.setAmountSustainable(26.0 * i);
+            trend.add(spending);
+        }
+
+        List<Link> links = new ArrayList<>();
+
+        return ResponseEntity.ok().body(new Resources<>(trend, links));
     }
 
     @RequestMapping(value = "/sustainability/states", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)

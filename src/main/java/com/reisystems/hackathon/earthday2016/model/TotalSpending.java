@@ -1,7 +1,9 @@
 package com.reisystems.hackathon.earthday2016.model;
 
 import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.core.Relation;
 
+@Relation(collectionRelation = "collection")
 public class TotalSpending extends ResourceSupport {
 
     private Double amount;
