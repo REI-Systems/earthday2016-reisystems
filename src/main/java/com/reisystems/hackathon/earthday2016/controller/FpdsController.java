@@ -21,6 +21,18 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 @Api(tags = "FPDS", description = "Federal Procurement Data System")
 public class FpdsController {
 
+    @RequestMapping(value = "/agency", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
+    @ApiOperation(value = "TotalSpending Federal Procurement")
+    public HttpEntity getAgency(
+            @PathVariable("id") Integer agencyId) {
+
+        TotalSpending totalSpending = new TotalSpending();
+        totalSpending.setAmount(1000000000.0);
+        totalSpending.setAmountSustainable(340000000.0);
+
+        return ResponseEntity.ok().body(totalSpending);
+    }
+
     @RequestMapping(value = "/spending", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
     @ApiOperation(value = "TotalSpending Federal Procurement")
     public HttpEntity getTotal() {
@@ -47,7 +59,7 @@ public class FpdsController {
             agency = new ContextBasedSpending();
             agency.setIdentifier("1400" + Integer.toString(i));
             agency.setAcronym("A" + Integer.toString(i));
-            agency.setName("Agency " + Integer.toString(i));
+            agency.setName("Context " + Integer.toString(i));
             agency.setAmount(12300678.0 / i);
             agency.setAmountSustainable(50000.0 / i);
             agencies.add(agency);
