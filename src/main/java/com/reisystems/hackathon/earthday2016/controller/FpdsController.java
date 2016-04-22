@@ -30,9 +30,36 @@ public class FpdsController {
         return ResponseEntity.ok().body(totalSpending);
     }
 
-    @RequestMapping(value = "/sustainability/state", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
-    @ApiOperation(value = "State Sustainability")
-    public HttpEntity getStateSustainability() {
+    @RequestMapping(value = "/sustainability/agencies", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
+    @ApiOperation(value = "Spending by Agencies")
+    public HttpEntity getSpendingByAgencies(
+            @RequestParam(value = "limit", required = false) Integer limit) {
+
+        if (limit == null) {
+            limit = 10;
+        }
+
+        List<ContextBasedSpending> agencies = new ArrayList<>();
+
+        ContextBasedSpending agency;
+        for (int i = 1; i <= limit; i++) {
+            agency = new ContextBasedSpending();
+            agency.setIdentifier("1400" + Integer.toString(i));
+            agency.setAcronym("A" + Integer.toString(i));
+            agency.setName("Agency " + Integer.toString(i));
+            agency.setAmount(12300678.0 / i);
+            agency.setAmountSustainable(50000.0 / i);
+            agencies.add(agency);
+        }
+
+        List<Link> links = new ArrayList<>();
+
+        return ResponseEntity.ok().body(new Resources<>(agencies, links));
+    }
+
+    @RequestMapping(value = "/sustainability/states", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
+    @ApiOperation(value = "Spending by States")
+    public HttpEntity getSpendingByStates() {
         List<ContextBasedSpending> states = new ArrayList<>();
 
         ContextBasedSpending state = new ContextBasedSpending();
