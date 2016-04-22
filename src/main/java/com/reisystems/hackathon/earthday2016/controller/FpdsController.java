@@ -34,6 +34,8 @@ public class FpdsController {
     public HttpEntity getTotal() {
         TotalSpending totalSpending = fpdsDAO.getTotal();
 
+        totalSpending.add(linkTo(methodOn(FpdsController.class).getTotal()).withSelfRel());
+
         return ResponseEntity.ok().body(totalSpending);
     }
 
@@ -50,9 +52,12 @@ public class FpdsController {
 
         List<Link> links = new ArrayList<>();
 
+        links.add(linkTo(methodOn(FpdsController.class).getSpendingByAgencies(limit)).withSelfRel());
+
         return ResponseEntity.ok().body(new Resources<>(agencies, links));
     }
 
+/*
     @RequestMapping(value = "/sustainability/agency/trend", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
     @ApiOperation(value = "Spending by Agencies")
     public HttpEntity getAgencySpendingTrend() {
@@ -63,7 +68,7 @@ public class FpdsController {
             spending = new AgencyTrend();
             spending.setAgencyId("1400" + Integer.toString(i));
             spending.setAgencyAbbreviation("A" + Integer.toString(i));
-//            spending.setYear(new Date(2005 + i, 1, 1));
+            spending.setYear(new Date(2005 + i, 1, 1));
             spending.setAmount(1678.5 * i);
             spending.setAmountSustainable(26.0 * i);
             trend.add(spending);
@@ -73,25 +78,16 @@ public class FpdsController {
 
         return ResponseEntity.ok().body(new Resources<>(trend, links));
     }
+*/
 
     @RequestMapping(value = "/sustainability/trend", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
     @ApiOperation(value = "Spending by Fereral Government")
     public HttpEntity getSpendingTrend() {
         List<Trend> trend = fpdsDAO.getTrend();
 
-        /*
-        Trend spending;
-        for (int i = 1; i <= 10; i++) {
-            spending = new Trend();
-            spending.setAgencyId("1400" + Integer.toString(i));
-            spending.setAgencyAbbreviation("A" + Integer.toString(i));
-            spending.setYear(new Date(2005 + i, 1, 1));
-            spending.setAmount(1678.5 * i);
-            spending.setAmountSustainable(26.0 * i);
-            trend.add(spending);
-        } */
-
         List<Link> links = new ArrayList<>();
+
+        links.add(linkTo(methodOn(FpdsController.class).getSpendingTrend()).withSelfRel());
 
         return ResponseEntity.ok().body(new Resources<>(trend, links));
     }
@@ -103,9 +99,12 @@ public class FpdsController {
 
         List<Link> links = new ArrayList<>();
 
+        links.add(linkTo(methodOn(FpdsController.class).getSpendingByStates()).withSelfRel());
+
         return ResponseEntity.ok().body(new Resources<>(states, links));
     }
 
+/*
     @RequestMapping(method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
     @ApiOperation(value = "Transactions")
     public HttpEntity getTransactions(
@@ -172,4 +171,5 @@ public class FpdsController {
 
         return ResponseEntity.ok().body(resource);
     }
+*/
 }
