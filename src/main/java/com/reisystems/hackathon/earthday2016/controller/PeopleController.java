@@ -88,7 +88,7 @@ public class PeopleController {
             @PathVariable("id") Integer personId) {
 
         Map<String, Object> query = new HashMap<>();
-        query.put("person_id", Integer.valueOf(personId));
+        query.put("person_id", personId);
 
         List<Person> people = peopleDAO.getPeople(query, null, null);
 
