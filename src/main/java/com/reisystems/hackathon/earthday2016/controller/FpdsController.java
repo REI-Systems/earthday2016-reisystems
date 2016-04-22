@@ -88,8 +88,8 @@ public class FpdsController {
     @RequestMapping(value = "/sustainability/states", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
     @ApiOperation(value = "Spending by States")
     public HttpEntity getSpendingByStates() {
-        List<ContextBasedSpending> states = new ArrayList<>();
-
+        List<ContextBasedSpending> states = fpdsDAO.getSpendingByStates();
+/*
         ContextBasedSpending state = new ContextBasedSpending();
         state.setIdentifier("1400");
         state.setAcronym("VA");
@@ -105,7 +105,7 @@ public class FpdsController {
         state2.setAmount(1000000.0);
         state2.setAmountSustainable(1000.0);
         states.add(state2);
-
+*/
         List<Link> links = new ArrayList<>();
 
         return ResponseEntity.ok().body(new Resources<>(states, links));
