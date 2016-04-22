@@ -2,6 +2,8 @@ package com.reisystems.hackathon.earthday2016.controller;
 
 import com.reisystems.hackathon.earthday2016.dao.PeopleDAO;
 import com.reisystems.hackathon.earthday2016.model.Person;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
@@ -21,12 +23,14 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/api/v1/people")
+@Api(tags = "People", description = "Hackathon paticipants")
 public class PeopleController {
 
     @Autowired
     private PeopleDAO peopleDAO;
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
+    @ApiOperation(value = "Search")
     public HttpEntity getPeople(
             @RequestParam(value = "offset", required = false) Integer offset,
             @RequestParam(value = "limit", required = false) Integer limit) {
@@ -76,6 +80,7 @@ public class PeopleController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
+    @ApiOperation(value = "Load Participant Information")
     public HttpEntity getPerson(
             @PathVariable("id") String personId) {
 
