@@ -7,6 +7,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,10 @@ public class PeopleController {
     public HttpEntity getPeople(
             @RequestParam(value = "offset", required = false) Integer offset,
             @RequestParam(value = "limit", required = false) Integer limit) {
+
+        if (limit == null) {
+            limit = 1;
+        }
 
         List<Person> people = peopleDAO.getPeople(offset, limit);
 
@@ -62,6 +67,10 @@ public class PeopleController {
                 links.add(linkTo(builder.getPeople(prevOffset, limit)).withRel(Link.REL_PREVIOUS));
             }
         }
+        // search
+        ControllerLinkBuilder searchLinkBuilder = linkTo(builder.getPeople(null, null));
+        Link searchLink = new Link(searchLinkBuilder.toString() + "{offset,limit}", "search");
+        links.add(searchLink);
 
         return ResponseEntity.ok().body(new Resources<>(people, links));
     }
