@@ -10,10 +10,7 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -30,10 +27,10 @@ public class FpdsController {
 
     @RequestMapping(value = "/spending", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
     @ApiOperation(value = "Spending Federal Procurement")
-    public HttpEntity getTotal() {
-        Spending totalSpending = fpdsDAO.getTotal();
+    public HttpEntity getTotalSpending() {
+        Spending totalSpending = fpdsDAO.getTotalSpending();
 
-        totalSpending.add(linkTo(methodOn(FpdsController.class).getTotal()).withSelfRel());
+        totalSpending.add(linkTo(methodOn(FpdsController.class).getTotalSpending()).withSelfRel());
 
         return ResponseEntity.ok().body(totalSpending);
     }
@@ -56,28 +53,17 @@ public class FpdsController {
         return ResponseEntity.ok().body(new Resources<>(agencies, links));
     }
 
-/*
-    @RequestMapping(value = "/sustainability/agency/trend", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
+    @RequestMapping(value = "/sustainability/agencies/{agencyId}/trend", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
     @ApiOperation(value = "Spending by Agencies")
-    public HttpEntity getAgencySpendingTrend() {
-        List<ContextTrend> trend = new ArrayList<>();
+    public HttpEntity getAgencySpendingTrend(
+            @PathVariable("agencyId") String agencyId) {
 
-        ContextTrend spending;
-        for (int i = 1; i <= 10; i++) {
-            spending = new ContextTrend();
-            spending.setAgencyId("1400" + Integer.toString(i));
-            spending.setAgencyAbbreviation("A" + Integer.toString(i));
-            spending.setYear(new Date(2005 + i, 1, 1));
-            spending.setAmount(1678.5 * i);
-            spending.setAmountSustainable(26.0 * i);
-            trend.add(spending);
-        }
+        List<ContextTrend> trend = fpdsDAO.getAgencyTrend(agencyId);
 
         List<Link> links = new ArrayList<>();
 
         return ResponseEntity.ok().body(new Resources<>(trend, links));
     }
-*/
 
     @RequestMapping(value = "/sustainability/trend", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
     @ApiOperation(value = "Spending by Fereral Government")

@@ -82,10 +82,10 @@ public class PeopleController {
         return ResponseEntity.ok().body(new Resources<>(people, links));
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
+    @RequestMapping(value = "/{personId}", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
     @ApiOperation(value = "Load Participant Information")
     public HttpEntity getPerson(
-            @PathVariable("id") Integer personId) {
+            @PathVariable("personId") Integer personId) {
 
         Map<String, Object> query = new HashMap<>();
         query.put("person_id", personId);
