@@ -48,7 +48,6 @@ public class FpdsController {
         List<ContextSpending> agencies = fpdsDAO.getSpendingByAgencies(limit);
 
         List<Link> links = new ArrayList<>();
-
         links.add(linkTo(methodOn(FpdsController.class).getSpendingByAgencies(limit)).withSelfRel());
 
         return ResponseEntity.ok().body(new Resources<>(agencies, links));
@@ -62,6 +61,7 @@ public class FpdsController {
         List<ContextTrend> trend = fpdsDAO.getAgencyTrend(agencyId);
 
         List<Link> links = new ArrayList<>();
+        links.add(linkTo(methodOn(FpdsController.class).getAgencySpendingTrend(agencyId)).withSelfRel());
 
         return ResponseEntity.ok().body(new Resources<>(trend, links));
     }
@@ -72,7 +72,6 @@ public class FpdsController {
         List<Trend> trend = fpdsDAO.getTrend();
 
         List<Link> links = new ArrayList<>();
-
         links.add(linkTo(methodOn(FpdsController.class).getSpendingTrend()).withSelfRel());
 
         return ResponseEntity.ok().body(new Resources<>(trend, links));
@@ -84,7 +83,6 @@ public class FpdsController {
         List<ContextSpending> states = fpdsDAO.getSpendingByStates();
 
         List<Link> links = new ArrayList<>();
-
         links.add(linkTo(methodOn(FpdsController.class).getSpendingByStates()).withSelfRel());
 
         return ResponseEntity.ok().body(new Resources<>(states, links));
@@ -113,11 +111,6 @@ public class FpdsController {
         List<Transaction> transactions = fpdsDAO.getTransactions(query, offset, limit);
 
         int count = fpdsDAO.getTransactionCount(query);
-
-        if (transactions != null) {
-            for (Transaction t: transactions) {
-            }
-        }
 
         List<Link> links = new ArrayList<>();
         FpdsController builder = methodOn(FpdsController.class);
