@@ -89,8 +89,6 @@ public class PostgreSQLFpdsDAO implements FpdsDAO {
         sql.append("  FROM fpds, agencies a");
         sql.append(" WHERE a.agency_id = fpds.agency_id) n");
         if (query != null) {
-            sql.append(" WHERE ");
-
             StringBuilder b = new StringBuilder();
             for (Map.Entry<String, Object> q: query.entrySet()) {
                 String columnName = q.getKey();
@@ -100,7 +98,10 @@ public class PostgreSQLFpdsDAO implements FpdsDAO {
                 b.append(columnName).append(String.format(" IN (:%s)", columnName));
                 args.addValue(columnName, q.getValue());
             }
-            sql.append(b);
+
+            if (b.length() > 0) {
+                sql.append(" WHERE ").append(b);
+            }
         }
         sql.append(" ORDER BY date, identifier");
 
@@ -112,5 +113,31 @@ public class PostgreSQLFpdsDAO implements FpdsDAO {
         }
 
         return this.jdbcTemplate.query(sql.toString(), args, new BeanPropertyRowMapper<Transaction>(Transaction.class));
+    }
+
+    public int getTransactionCount(Map<String, Object> query) {
+        MapSqlParameterSource args = new MapSqlParameterSource();
+
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*)");
+        sql.append(" FROM (");
+        sql.append("SELECT fpds.agency_id, fpds.piid AS identifier, a.name AS agency_name, fpds.product AS product_name, fpds.location_state_code AS state_code, fpds.amount, fpds.effective_date AS date");
+        sql.append("  FROM fpds, agencies a");
+        sql.append(" WHERE a.agency_id = fpds.agency_id) n");
+        if (query != null) {
+            StringBuilder b = new StringBuilder();
+            for (Map.Entry<String, Object> q: query.entrySet()) {
+                String columnName = q.getKey();
+                if (b.length() > 0) {
+                    b.append(" AND ");
+                }
+                b.append(columnName).append(String.format(" IN (:%s)", columnName));
+                args.addValue(columnName, q.getValue());
+            }
+            if (b.length() > 0) {
+                sql.append(" WHERE ").append(b);
+            }
+        }
+
+        return this.jdbcTemplate.queryForObject(sql.toString(), args, Integer.class);
     }
 }

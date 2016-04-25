@@ -108,7 +108,7 @@ public class FpdsController {
 
         List<Transaction> transactions = fpdsDAO.getTransactions(query, offset, limit);
 
-        int count = 150;
+        int count = fpdsDAO.getTransactionCount(query);
 
         if (transactions != null) {
             for (Transaction t: transactions) {

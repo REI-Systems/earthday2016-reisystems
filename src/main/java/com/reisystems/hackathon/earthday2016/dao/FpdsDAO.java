@@ -17,4 +17,5 @@ public interface FpdsDAO {
     List<ContextTrend> getAgencyTrend(String agencyId);
 
     List<Transaction> getTransactions(Map<String, Object> query, Integer offset, Integer limit);
+    int getTransactionCount(Map<String, Object> query);
 }
