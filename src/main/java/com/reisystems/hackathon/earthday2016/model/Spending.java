@@ -1,14 +1,15 @@
 package com.reisystems.hackathon.earthday2016.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.core.Relation;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class ContextBasedSpending extends Context {
+@Relation(collectionRelation = "spending")
+public class Spending extends ResourceSupport {
 
-    private Double amount;
-    private Double amountSustainable;
+    private Double amount = 0.0;
+    private Double amountSustainable = 0.0;
 
-    public ContextBasedSpending() {}
+    public Spending() {}
 
     public Double getAmount() {
         return amount;

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resources;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,9 +29,9 @@ public class FpdsController {
     private FpdsDAO fpdsDAO;
 
     @RequestMapping(value = "/spending", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
-    @ApiOperation(value = "TotalSpending Federal Procurement")
+    @ApiOperation(value = "Spending Federal Procurement")
     public HttpEntity getTotal() {
-        TotalSpending totalSpending = fpdsDAO.getTotal();
+        Spending totalSpending = fpdsDAO.getTotal();
 
         totalSpending.add(linkTo(methodOn(FpdsController.class).getTotal()).withSelfRel());
 
@@ -48,7 +47,7 @@ public class FpdsController {
             limit = 10;
         }
 
-        List<ContextBasedSpending> agencies = fpdsDAO.getSpendingByAgencies(limit);
+        List<ContextSpending> agencies = fpdsDAO.getSpendingByAgencies(limit);
 
         List<Link> links = new ArrayList<>();
 
@@ -61,11 +60,11 @@ public class FpdsController {
     @RequestMapping(value = "/sustainability/agency/trend", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
     @ApiOperation(value = "Spending by Agencies")
     public HttpEntity getAgencySpendingTrend() {
-        List<AgencyTrend> trend = new ArrayList<>();
+        List<ContextTrend> trend = new ArrayList<>();
 
-        AgencyTrend spending;
+        ContextTrend spending;
         for (int i = 1; i <= 10; i++) {
-            spending = new AgencyTrend();
+            spending = new ContextTrend();
             spending.setAgencyId("1400" + Integer.toString(i));
             spending.setAgencyAbbreviation("A" + Integer.toString(i));
             spending.setYear(new Date(2005 + i, 1, 1));
@@ -95,7 +94,7 @@ public class FpdsController {
     @RequestMapping(value = "/sustainability/states", method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
     @ApiOperation(value = "Spending by States")
     public HttpEntity getSpendingByStates() {
-        List<ContextBasedSpending> states = fpdsDAO.getSpendingByStates();
+        List<ContextSpending> states = fpdsDAO.getSpendingByStates();
 
         List<Link> links = new ArrayList<>();
 

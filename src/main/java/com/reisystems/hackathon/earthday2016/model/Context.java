@@ -9,7 +9,7 @@ import org.springframework.hateoas.core.Relation;
 public class Context extends ResourceSupport {
 
     private String identifier;
-    private String acronym;
+    private String abbreviation;
     private String name;
 
     public Context() {}
@@ -22,12 +22,12 @@ public class Context extends ResourceSupport {
         this.identifier = identifier;
     }
 
-    public String getAcronym() {
-        return acronym;
+    public String getAbbreviation() {
+        return abbreviation;
     }
 
-    public void setAcronym(String acronym) {
-        this.acronym = acronym;
+    public void setAbbreviation(String abbreviation) {
+        this.abbreviation = abbreviation;
     }
 
     public String getName() {

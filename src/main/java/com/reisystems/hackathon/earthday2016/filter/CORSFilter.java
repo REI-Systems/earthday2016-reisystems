@@ -1,4 +1,5 @@
 package com.reisystems.hackathon.earthday2016.filter;
+
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;

@@ -5,7 +5,6 @@ import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.core.Relation;
 
 @Relation(collectionRelation = "people")
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Person extends ResourceSupport {
 
     private Integer personId;
