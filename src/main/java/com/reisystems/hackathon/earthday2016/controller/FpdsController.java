@@ -93,6 +93,7 @@ public class FpdsController {
     public HttpEntity getTransactions(
         @RequestParam(value = "agencyId", required = false) String agencyId,
         @RequestParam(value = "stateCode", required = false) String state_code,
+        @RequestParam(value = "year", required = false) Integer year,
         @RequestParam(value = "offset", required = false) Integer offset,
         @RequestParam(value = "limit", required = false) Integer limit) {
 
@@ -107,6 +108,9 @@ public class FpdsController {
         if (state_code != null) {
             query.put("state_code", state_code);
         }
+        if (year != null) {
+            query.put("year", year);
+        }
 
         List<Transaction> transactions = fpdsDAO.getTransactions(query, offset, limit);
 
@@ -116,24 +120,24 @@ public class FpdsController {
         FpdsController builder = methodOn(FpdsController.class);
 
         // self
-        links.add(linkTo(builder.getTransactions(agencyId, state_code, offset, limit)).withSelfRel());
+        links.add(linkTo(builder.getTransactions(agencyId, state_code, year, offset, limit)).withSelfRel());
         // navigation links
         if ((offset != null) && (offset > 0)) {
-            links.add(linkTo(builder.getTransactions(agencyId, state_code, null, limit)).withRel(Link.REL_FIRST));
+            links.add(linkTo(builder.getTransactions(agencyId, state_code, year, null, limit)).withRel(Link.REL_FIRST));
         }
         if (limit != null) {
             if ((transactions.size() == limit)) {
                 Integer nextOffset = ((offset == null) ? 0 : offset) + limit;
-                links.add(linkTo(builder.getTransactions(agencyId, state_code, nextOffset, limit)).withRel(Link.REL_NEXT));
+                links.add(linkTo(builder.getTransactions(agencyId, state_code, year, nextOffset, limit)).withRel(Link.REL_NEXT));
             }
             if ((offset != null) && (offset > 0)) {
                 Integer prevOffset = (offset > limit) ? offset - limit : null;
-                links.add(linkTo(builder.getTransactions(agencyId, state_code, prevOffset, limit)).withRel(Link.REL_PREVIOUS));
+                links.add(linkTo(builder.getTransactions(agencyId, state_code, year, prevOffset, limit)).withRel(Link.REL_PREVIOUS));
             }
         }
         // search
-        ControllerLinkBuilder searchLinkBuilder = linkTo(builder.getTransactions(null, null, null, null));
-        Link searchLink = new Link(searchLinkBuilder.toString() + "{agencyId,state_code,offset,limit}", "search");
+        ControllerLinkBuilder searchLinkBuilder = linkTo(builder.getTransactions(null, null, null, null, null));
+        Link searchLink = new Link(searchLinkBuilder.toString() + "{agencyId,state_code,year,offset,limit}", "search");
         links.add(searchLink);
 
         TransactionList resource = new TransactionList<>(transactions, links);

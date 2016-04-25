@@ -83,9 +83,9 @@ public class PostgreSQLFpdsDAO implements FpdsDAO {
     public List<Transaction> getTransactions(Map<String, Object> query, Integer offset, Integer limit) {
         MapSqlParameterSource args = new MapSqlParameterSource();
 
-        StringBuilder sql = new StringBuilder("SELECT agency_id, identifier, agency_name, product_name, state_code, amount, date");
+        StringBuilder sql = new StringBuilder("SELECT agency_id, identifier, agency_name, product_name, state_code, amount, date, year");
         sql.append(" FROM (");
-        sql.append("SELECT fpds.agency_id, fpds.piid AS identifier, a.name AS agency_name, fpds.product AS product_name, fpds.location_state_code AS state_code, fpds.amount, fpds.effective_date AS date");
+        sql.append("SELECT fpds.agency_id, fpds.piid AS identifier, a.name AS agency_name, fpds.product AS product_name, fpds.location_state_code AS state_code, fpds.amount, fpds.effective_date AS date, date_part('year', effective_date) AS year");
         sql.append("  FROM fpds, agencies a");
         sql.append(" WHERE a.agency_id = fpds.agency_id) n");
         if (query != null) {
@@ -120,9 +120,8 @@ public class PostgreSQLFpdsDAO implements FpdsDAO {
 
         StringBuilder sql = new StringBuilder("SELECT COUNT(*)");
         sql.append(" FROM (");
-        sql.append("SELECT fpds.agency_id, fpds.piid AS identifier, a.name AS agency_name, fpds.product AS product_name, fpds.location_state_code AS state_code, fpds.amount, fpds.effective_date AS date");
-        sql.append("  FROM fpds, agencies a");
-        sql.append(" WHERE a.agency_id = fpds.agency_id) n");
+        sql.append("SELECT agency_id, location_state_code AS state_code, date_part('year', effective_date) AS year");
+        sql.append("  FROM fpds) n");
         if (query != null) {
             StringBuilder b = new StringBuilder();
             for (Map.Entry<String, Object> q: query.entrySet()) {
