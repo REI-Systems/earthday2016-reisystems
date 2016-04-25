@@ -11,9 +11,10 @@ import java.util.Date;
 public class Transaction extends ResourceSupport {
 
     private String identifier;
+    private String agencyId;
     private String agencyName;
     private String productName;
-    private String state;
+    private String stateCode;
     private Date date;
     private Double amount;
 
@@ -25,6 +26,14 @@ public class Transaction extends ResourceSupport {
 
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
+    }
+
+    public String getAgencyId() {
+        return agencyId;
+    }
+
+    public void setAgencyId(String agencyId) {
+        this.agencyId = agencyId;
     }
 
     public String getAgencyName() {
@@ -43,12 +52,12 @@ public class Transaction extends ResourceSupport {
         this.productName = productName;
     }
 
-    public String getState() {
-        return state;
+    public String getStateCode() {
+        return stateCode;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setStateCode(String stateCode) {
+        this.stateCode = stateCode;
     }
 
     public Date getDate() {

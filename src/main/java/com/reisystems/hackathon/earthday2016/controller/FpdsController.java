@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -89,7 +90,6 @@ public class FpdsController {
         return ResponseEntity.ok().body(new Resources<>(states, links));
     }
 
-/*
     @RequestMapping(method = RequestMethod.GET, produces = MediaTypes.HAL_JSON_VALUE)
     @ApiOperation(value = "Transactions")
     public HttpEntity getTransactions(
@@ -106,19 +106,7 @@ public class FpdsController {
             query.put("agency_id", agencyId);
         }
 
-        List<Transaction> transactions = new ArrayList<>();
-
-        Transaction transaction;
-        for (int i = 0; i < limit; i++) {
-            transaction = new Transaction();
-            transaction.setIdentifier(Integer.toString(10 + i));
-            transaction.setAgencyName("Agency " + Integer.toString(i));
-            transaction.setProductName("Product " + Integer.toString(i + 34));
-            transaction.setState("State " + Integer.toString(i + 5));
-            transaction.setAmount(123.0 * i);
-            transaction.setDate(new Date(2015, i, 1));
-            transactions.add(transaction);
-        }
+        List<Transaction> transactions = fpdsDAO.getTransactions(query, offset, limit);
 
         int count = 150;
 
@@ -156,5 +144,4 @@ public class FpdsController {
 
         return ResponseEntity.ok().body(resource);
     }
-*/
 }

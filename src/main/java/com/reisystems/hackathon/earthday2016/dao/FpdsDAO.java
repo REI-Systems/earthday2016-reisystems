@@ -1,11 +1,9 @@
 package com.reisystems.hackathon.earthday2016.dao;
 
-import com.reisystems.hackathon.earthday2016.model.ContextSpending;
-import com.reisystems.hackathon.earthday2016.model.ContextTrend;
-import com.reisystems.hackathon.earthday2016.model.Spending;
-import com.reisystems.hackathon.earthday2016.model.Trend;
+import com.reisystems.hackathon.earthday2016.model.*;
 
 import java.util.List;
+import java.util.Map;
 
 public interface FpdsDAO {
 
@@ -17,4 +15,6 @@ public interface FpdsDAO {
 
     List<Trend> getTrend();
     List<ContextTrend> getAgencyTrend(String agencyId);
+
+    List<Transaction> getTransactions(Map<String, Object> query, Integer offset, Integer limit);
 }

@@ -3,16 +3,14 @@ package com.reisystems.hackathon.earthday2016.dao.postgresql;
 import com.reisystems.hackathon.earthday2016.dao.ContextSpendingRowMapper;
 import com.reisystems.hackathon.earthday2016.dao.ContextTrendRowMapper;
 import com.reisystems.hackathon.earthday2016.dao.FpdsDAO;
-import com.reisystems.hackathon.earthday2016.model.ContextSpending;
-import com.reisystems.hackathon.earthday2016.model.ContextTrend;
-import com.reisystems.hackathon.earthday2016.model.Spending;
-import com.reisystems.hackathon.earthday2016.model.Trend;
+import com.reisystems.hackathon.earthday2016.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.util.List;
+import java.util.Map;
 
 public class PostgreSQLFpdsDAO implements FpdsDAO {
 
@@ -80,5 +78,39 @@ public class PostgreSQLFpdsDAO implements FpdsDAO {
         args.addValue("agency_id", agencyId);
 
         return this.jdbcTemplate.query(sql.toString(), args, new ContextTrendRowMapper());
+    }
+
+    public List<Transaction> getTransactions(Map<String, Object> query, Integer offset, Integer limit) {
+        MapSqlParameterSource args = new MapSqlParameterSource();
+
+        StringBuilder sql = new StringBuilder("SELECT agency_id, identifier, agency_name, product_name, state_code, amount, date");
+        sql.append(" FROM (");
+        sql.append("SELECT fpds.agency_id, fpds.piid AS identifier, a.name AS agency_name, fpds.product AS product_name, fpds.location_state_code AS state_code, fpds.amount, fpds.effective_date AS date");
+        sql.append("  FROM fpds, agencies a");
+        sql.append(" WHERE a.agency_id = fpds.agency_id) n");
+        if (query != null) {
+            sql.append(" WHERE ");
+
+            StringBuilder b = new StringBuilder();
+            for (Map.Entry<String, Object> q: query.entrySet()) {
+                String columnName = q.getKey();
+                if (b.length() > 0) {
+                    b.append(" AND ");
+                }
+                b.append(columnName).append(String.format(" IN (:%s)", columnName));
+                args.addValue(columnName, q.getValue());
+            }
+            sql.append(b);
+        }
+        sql.append(" ORDER BY date, identifier");
+
+        if (limit != null) {
+            sql.append(" LIMIT ").append(limit);
+        }
+        if (offset != null) {
+            sql.append(" OFFSET ").append(offset);
+        }
+
+        return this.jdbcTemplate.query(sql.toString(), args, new BeanPropertyRowMapper<Transaction>(Transaction.class));
     }
 }
