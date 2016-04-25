@@ -57,7 +57,8 @@ public class PostgreSQLFpdsDAO implements FpdsDAO {
         MapSqlParameterSource args = new MapSqlParameterSource();
 
         StringBuilder sql = new StringBuilder("SELECT date_part('year', effective_date) AS year, SUM(amount) amount, SUM(CASE WHEN (is_sustainable = '1') THEN amount ELSE 0 END) AS amount_sustainable");
-        sql.append(" FROM fpds");
+        sql.append("  FROM fpds");
+        sql.append(" WHERE effective_date < current_date");
         sql.append(" GROUP BY date_part('year', effective_date)");
 
         return this.jdbcTemplate.query(sql.toString(), args, new BeanPropertyRowMapper<Trend>(Trend.class));
@@ -70,7 +71,7 @@ public class PostgreSQLFpdsDAO implements FpdsDAO {
         sql.append(" FROM (");
         sql.append(" SELECT agency_id, date_part('year', effective_date) AS year, SUM(amount) amount, SUM(CASE WHEN (is_sustainable = '1') THEN amount ELSE 0 END) AS amount_sustainable");
         sql.append("   FROM fpds");
-        sql.append("  WHERE agency_id = :agency_id");
+        sql.append("  WHERE agency_id = :agency_id AND effective_date < current_date");
         sql.append("  GROUP BY agency_id, date_part('year', effective_date)");
         sql.append(") d, agencies a");
         sql.append(" WHERE a.agency_id = d.agency_id");
